@@ -100,10 +100,6 @@ void pinSetup() {
 
 void serverSetup() {
   WiFi.begin(SSID, PASSWORD);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-  }
-  Serial.print(WiFi.localIP());
   LittleFS.begin();
   server.serveStatic("/", LittleFS, "/").setDefaultFile("index.html");
   server.on("/hold", HTTP_GET, handleHold);
