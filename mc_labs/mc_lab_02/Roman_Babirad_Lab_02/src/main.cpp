@@ -56,12 +56,12 @@ void handleReleased(AsyncWebServerRequest *request) {
   request->send_P(200, "text/html", "ok");
 }
 
-void handleStartAlgo2(AsyncWebServerRequest *request) {
+void sendStartSignal(AsyncWebServerRequest *request) {
   Serial.print("n");
   request->send_P(200, "text/html", "ok");
 }
 
-void handleStopAlgo2(AsyncWebServerRequest *request) {
+void sendStopSignal(AsyncWebServerRequest *request) {
   Serial.print("f");
   request->send_P(200, "text/html", "ok");
 }
@@ -100,17 +100,16 @@ void pinSetup() {
 
 void serverSetup() {
   WiFi.begin(SSID, PASSWORD);
-
   while (WiFi.status() != WL_CONNECTED) {
-    delay(1000);
+    delay(500);
   }
   Serial.print(WiFi.localIP());
   LittleFS.begin();
   server.serveStatic("/", LittleFS, "/").setDefaultFile("index.html");
   server.on("/hold", HTTP_GET, handleHold);
   server.on("/release", HTTP_GET, handleReleased);
-  server.on("/startAlgo2", HTTP_GET, handleStartAlgo2);
-  server.on("/stopAlgo2", HTTP_GET, handleStopAlgo2);
+  server.on("/start", HTTP_GET, sendStartSignal);
+  server.on("/stop", HTTP_GET, sendStopSignal);
   server.addHandler(&ws);
   server.begin();
 }
