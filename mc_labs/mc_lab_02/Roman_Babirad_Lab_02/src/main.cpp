@@ -3,8 +3,8 @@
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
 
-#define SSID "iPhone Bohdan"
-#define PASSWORD "135792468"
+#define SSID "dodkolox"
+#define PASSWORD "12345678"
 #define BLINK_INTERVAL 1000
 #define HOLD_INTERVAL 500
 
@@ -57,16 +57,19 @@ void handleReleased(AsyncWebServerRequest *request) {
 }
 
 void sendStartSignal(AsyncWebServerRequest *request) {
-  Serial.print("n");
+  Serial.print("h");
   request->send_P(200, "text/html", "ok");
 }
 
 void sendStopSignal(AsyncWebServerRequest *request) {
-  Serial.print("f");
+  Serial.print("r");
   request->send_P(200, "text/html", "ok");
 }
 
 void sendCurrentLEDtoWEB() {
+  if (currentLED == nullptr) {
+    return;
+  }
   switch (currentLED->color) {
     case Color::RED:
       ws.textAll("red");
@@ -99,7 +102,8 @@ void pinSetup() {
 }
 
 void serverSetup() {
-  WiFi.begin(SSID, PASSWORD);
+  WiFi.softAP(SSID, PASSWORD);
+  Serial.print(WiFi.softAPIP());
   LittleFS.begin();
   server.serveStatic("/", LittleFS, "/").setDefaultFile("index.html");
   server.on("/hold", HTTP_GET, handleHold);
@@ -153,10 +157,10 @@ void checkSerial() {
   if (Serial.available() > 0) {
     serialData = Serial.read();
     switch (serialData) {
-      case 'n':
+      case 'h':
         button.serialIsHeld = true;
         break;
-      case 'f':
+      case 'r':
         button.serialIsHeld = false;
         break;
     }

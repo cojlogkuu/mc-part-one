@@ -39,6 +39,7 @@ function handleStart() {
 }
 
 function handleStop() {
+
   if (wasHeldEnough2) {
     fetch('/stop').then();
   }
@@ -46,7 +47,7 @@ function handleStop() {
   wasHeldEnough2 = false;
 }
 
-const socket = new WebSocket("ws://esp_url/ws");
+const socket = new WebSocket("ws://192.168.4.1/ws");
 
 socket.onmessage = (event) => {
   let data = event.data;
